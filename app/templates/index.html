@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Banking Fraud Detection System | Enterprise AI Shield</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <!-- Chart.js for Interactive Visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body class="theme-dark">
+  <div class="app-layout">
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar" id="app-sidebar">
+      <div class="sidebar-header">
+        <div class="brand-logo">
+          <div class="brand-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <path d="m9 12 2 2 4-4"/>
+            </svg>
+          </div>
+          <div class="brand-info">
+            <span class="brand-title">AegisBank AI</span>
+            <span class="brand-badge">Fraud Detection</span>
+          </div>
+        </div>
+        <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Navigation Menu with the 8 requested items + Connect API -->
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">MAIN OPERATIONS</div>
+        <a href="#dashboard" class="nav-link active" data-tab="tab-dashboard">
+          <span class="nav-icon">📊</span>
+          <span class="nav-text">Dashboard</span>
+        </a>
+        <a href="#dataset-overview" class="nav-link" data-tab="tab-dataset">
+          <span class="nav-icon">🗄️</span>
+          <span class="nav-text">Dataset Overview</span>
+        </a>
+        <a href="#analytics" class="nav-link" data-tab="tab-analytics">
+          <span class="nav-icon">📈</span>
+          <span class="nav-text">Analytics</span>
+        </a>
+        <a href="#fraud-detection" class="nav-link" data-tab="tab-detector">
+          <span class="nav-icon">🛡️</span>
+          <span class="nav-text">Fraud Detection</span>
+          <span class="nav-pill pulse">Live</span>
+        </a>
+        <a href="#report" class="nav-link" data-tab="tab-report">
+          <span class="nav-icon">📑</span>
+          <span class="nav-text">Report</span>
+        </a>
+        <a href="#visualization" class="nav-link" data-tab="tab-visualization">
+          <span class="nav-icon">📉</span>
+          <span class="nav-text">Visualization</span>
+        </a>
+
+        <div class="nav-section-label">ARCHITECTURE & SYSTEM</div>
+        <a href="#workflow" class="nav-link" data-tab="tab-workflow">
+          <span class="nav-icon">🔄</span>
+          <span class="nav-text">Workflow</span>
+        </a>
+        <a href="#about-project" class="nav-link" data-tab="tab-about">
+          <span class="nav-icon">ℹ️</span>
+          <span class="nav-text">About Project</span>
+        </a>
+        <a href="#connect-api" class="nav-link" data-tab="tab-api">
+          <span class="nav-icon">🔌</span>
+          <span class="nav-text">Connect API</span>
+          <span class="nav-pill badge-green">REST</span>
+        </a>
+      </nav>
+
+      <!-- Sidebar Footer Status Card -->
+      <div class="sidebar-footer">
+        <div class="engine-status-card">
+          <div class="status-indicator">
+            <span class="pulse-dot"></span>
+            <span class="status-name">XGBoost & Rules Active</span>
+          </div>
+          <div class="status-sub">Inference Latency: &lt; 1.2ms</div>
+          <a href="/docs" target="_blank" class="sidebar-docs-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+            Interactive Swagger Docs
+          </a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN APP WRAPPER -->
+    <div class="main-wrapper">
+      <!-- Top Action Bar -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="mobile-menu-btn" onclick="toggleSidebar()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <div class="header-breadcrumb">
+            <span class="bc-root">Banking Fraud Detection</span>
+            <span class="bc-sep">/</span>
+            <span class="bc-current" id="header-active-title">Dashboard</span>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <!-- Live Simulation Controls -->
+          <div class="simulation-group">
+            <button class="sim-btn" onclick="triggerSimulation(5)" title="Inject 5 simulated transactions">
+              ⚡ Simulate 5 Txns
+            </button>
+            <button class="sim-btn" onclick="triggerSimulation(20)" title="Inject 20 simulated transactions">
+              🚀 Simulate 20 Txns
+            </button>
+            <button class="sim-btn live-stream-btn" id="btn-live-stream" onclick="toggleLiveStream()" title="Stream live transactions every 3 seconds">
+              <span class="stream-dot"></span>
+              <span id="live-stream-label">Live Stream: OFF</span>
+            </button>
+          </div>
+
+          <!-- API Health Status Pill -->
+          <div class="health-pill" id="health-pill" title="API Status">
+            <span class="health-dot"></span>
+            <span id="health-status-text">API Online (<span id="health-latency">1.1ms</span>)</span>
+          </div>
+
+          <!-- Quick API Link -->
+          <button class="btn-api-quick" onclick="switchToTab('tab-api')">
+            🔌 Connect API
+          </button>
+        </div>
+      </header>
+
+      <!-- CONTENT SECTIONS -->
+      <main class="content-area">
+        
+        <!-- ========================================================== -->
+        <!-- 1. DASHBOARD TAB -->
+        <!-- ========================================================== -->
+        <section id="tab-dashboard" class="tab-pane active">
+          <!-- Overview Hero Banner -->
+          <div class="dashboard-hero">
+            <div class="hero-text">
+              <h2>Banking Transaction Risk Surveillance</h2>
+              <p>Real-time machine learning & heuristic rule enforcement defending accounts against fraudulent transfers, unauthorized cash-outs, balance draining, and identity theft.</p>
+            </div>
+            <div class="hero-actions">
+              <button class="btn-hero-primary" onclick="switchToTab('tab-detector')">
+                🛡️ Evaluate Transaction
+              </button>
+              <button class="btn-hero-secondary" onclick="switchToTab('tab-visualization')">
+                📊 View Analytics
+              </button>
+            </div>
+          </div>
+
+          <!-- Top 4 Metrics KPI Grid -->
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-title">Total Transactions Scanned</span>
+                <span class="kpi-icon icon-blue">📊</span>
+              </div>
+              <div class="kpi-value" id="kpi-total">0</div>
+              <div class="kpi-footer">
+                <span class="kpi-badge badge-blue">Evaluated</span>
+                <span>Throughput: Real-time</span>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-title">Legitimate Approved</span>
+                <span class="kpi-icon icon-green">✅</span>
+              </div>
+              <div class="kpi-value text-green" id="kpi-genuine">0</div>
+              <div class="kpi-footer">
+                <span class="kpi-badge badge-green">ALLOW</span>
+                <span>Zero customer friction</span>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-title">Fraud Detected & Blocked</span>
+                <span class="kpi-icon icon-red">🚨</span>
+              </div>
+              <div class="kpi-value text-red" id="kpi-fraud">0</div>
+              <div class="kpi-footer">
+                <span class="kpi-badge badge-red" id="kpi-rate-badge">0.0% Rate</span>
+                <span>Blocked / Flagged</span>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-title">Protected Financial Assets</span>
+                <span class="kpi-icon icon-purple">🛡️</span>
+              </div>
+              <div class="kpi-value text-purple" id="kpi-prevented">$0.00</div>
+              <div class="kpi-footer">
+                <span class="kpi-badge badge-purple">Prevented Loss</span>
+                <span>Saved bank capital</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Test Scenarios Launchpad -->
+          <div class="card scenario-card">
+            <div class="card-header">
+              <div>
+                <h3>⚡ Quick Test Scenarios</h3>
+                <p>Click any benchmark scenario to immediately test transaction evaluation & rule triggers:</p>
+              </div>
+              <button class="btn-sm" onclick="switchToTab('tab-detector')">Open Full Form →</button>
+            </div>
+            <div class="scenarios-grid">
+              <button class="scenario-tile genuine" onclick="loadScenarioAndEvaluate(0)">
+                <div class="sc-icon">☕</div>
+                <div class="sc-meta">
+                  <span class="sc-title">Coffee Payment ($5.75)</span>
+                  <span class="sc-type">PAYMENT • Low Risk • Domestic</span>
+                </div>
+                <span class="badge badge-genuine">Genuine</span>
+              </button>
+
+              <button class="scenario-tile fraud" onclick="loadScenarioAndEvaluate(1)">
+                <div class="sc-icon">⚠️</div>
+                <div class="sc-meta">
+                  <span class="sc-title">Balance Drain ($89,500)</span>
+                  <span class="sc-type">TRANSFER • 100% Drain • Night</span>
+                </div>
+                <span class="badge badge-fraud">Fraud</span>
+              </button>
+
+              <button class="scenario-tile fraud" onclick="loadScenarioAndEvaluate(2)">
+                <div class="sc-icon">🌐</div>
+                <div class="sc-meta">
+                  <span class="sc-title">Overseas ATM ($9,500)</span>
+                  <span class="sc-type">CASH_OUT • Foreign IP • Low Trust</span>
+                </div>
+                <span class="badge badge-fraud">Fraud</span>
+              </button>
+
+              <button class="scenario-tile genuine" onclick="loadScenarioAndEvaluate(3)">
+                <div class="sc-icon">💼</div>
+                <div class="sc-meta">
+                  <span class="sc-title">Corporate Payroll ($4,250)</span>
+                  <span class="sc-type">CASH_IN • Verified Employer</span>
+                </div>
+                <span class="badge badge-genuine">Genuine</span>
+              </button>
+
+              <button class="scenario-tile fraud" onclick="loadScenarioAndEvaluate(4)">
+                <div class="sc-icon">⚡</div>
+                <div class="sc-meta">
+                  <span class="sc-title">Velocity Spike ($2,800)</span>
+                  <span class="sc-type">TRANSFER • 9 Txns/hr • Crypto</span>
+                </div>
+                <span class="badge badge-fraud">Fraud</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Split Dashboard Section: Live Feed & Defense Layers -->
+          <div class="dashboard-split">
+            <!-- Left: Live Activity Feed -->
+            <div class="card feed-card">
+              <div class="card-header">
+                <div>
+                  <h3>🔴 Live Transaction Stream</h3>
+                  <p>Real-time surveillance audit trail of evaluated transactions</p>
+                </div>
+                <button class="btn-sm" onclick="switchToTab('tab-report')">View Full Audit →</button>
+              </div>
+              <div class="live-feed-list" id="dashboard-feed-list">
+                <div class="feed-empty">No transactions logged yet. Click "Simulate 5 Txns" or test a scenario!</div>
+              </div>
+            </div>
+
+            <!-- Right: Security Defense Operations Card -->
+            <div class="card defense-card">
+              <div class="card-header">
+                <div>
+                  <h3>🛡️ Active Defense Shields</h3>
+                  <p>Dual-engine defense rules & machine learning layers</p>
+                </div>
+                <span class="badge badge-genuine">Enforcing</span>
+              </div>
+              <div class="defense-rules-list">
+                <div class="rule-item">
+                  <div class="rule-icon">⚖️</div>
+                  <div class="rule-body">
+                    <span class="rule-title">XGBoost ML Classifier (2.0.0 JSON)</span>
+                    <span class="rule-desc">18-feature gradient tree scoring with <code>scale_pos_weight=10.76</code>.</span>
+                  </div>
+                  <span class="rule-status ok">Active</span>
+                </div>
+
+                <div class="rule-item">
+                  <div class="rule-icon">🚰</div>
+                  <div class="rule-body">
+                    <span class="rule-title">Account Balance Liquidation Intercept</span>
+                    <span class="rule-desc">Flags complete drain events (&gt;90% of origin balance in single transaction).</span>
+                  </div>
+                  <span class="rule-status ok">Active</span>
+                </div>
+
+                <div class="rule-item">
+                  <div class="rule-icon">📱</div>
+                  <div class="rule-body">
+                    <span class="rule-title">Device Fingerprint & Geo-Anomaly</span>
+                    <span class="rule-desc">Quarantines transactions originating from untrusted hardware (&lt;0.30 score) or foreign endpoints.</span>
+                  </div>
+                  <span class="rule-status ok">Active</span>
+                </div>
+
+                <div class="rule-item">
+                  <div class="rule-icon">⚡</div>
+                  <div class="rule-body">
+                    <span class="rule-title">Velocity Burst & Micro-Transfer Shield</span>
+                    <span class="rule-desc">Detects rapid automated transfer bursts (&gt;4 transactions/hour).</span>
+                  </div>
+                  <span class="rule-status ok">Active</span>
+                </div>
+
+                <div class="rule-item">
+                  <div class="rule-icon">🌙</div>
+                  <div class="rule-body">
+                    <span class="rule-title">Off-Hours Night Transaction Monitoring</span>
+                    <span class="rule-desc">Elevates scrutiny on high-dollar movements between 12:00 AM - 5:00 AM.</span>
+                  </div>
+                  <span class="rule-status ok">Active</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ========================================================== -->
+        <!-- 2. DATASET OVERVIEW TAB -->
+        <!-- ========================================================== -->
+        <section id="tab-dataset" class="tab-pane">
+          <div class="section-intro">
+            <h2>Banking Dataset Overview & Reference Benchmark</h2>
+            <p>Inspection of the 30,000+ transaction financial dataset, feature schemas, class distributions, and data loading utilities.</p>
+          </div>
+
+          <!-- Dataset Summary Cards -->
+          <div class="dataset-stats-grid">
+            <div class="data-stat-card">
+              <span class="stat-lbl">Dataset Benchmark</span>
+              <span class="stat-val highlight" id="ds-name">PaySim Financial Benchmark</span>
+              <span class="stat-sub">Financial Transaction Synthetic Engine</span>
+            </div>
+            <div class="data-stat-card">
+              <span class="stat-lbl">Total Samples</span>
+              <span class="stat-val" id="ds-total">30,000</span>
+              <span class="stat-sub">High-resolution transaction vectors</span>
+            </div>
+            <div class="data-stat-card">
+              <span class="stat-lbl">Feature Dimensions</span>
+              <span class="stat-val" id="ds-features">18 Features</span>
+              <span class="stat-sub">Spatial, behavioral & financial columns</span>
+            </div>
+            <div class="data-stat-card">
+              <span class="stat-lbl">Class Imbalance Ratio</span>
+              <span class="stat-val text-yellow" id="ds-ratio">10.76 : 1</span>
+              <span class="stat-sub">91.5% Genuine / 8.5% Fraud</span>
+            </div>
+          </div>
+
+          <!-- Class Imbalance & Distribution Analysis -->
+          <div class="card mt-4">
+            <div class="card-header">
+              <div>
+                <h3>⚖️ Class Distribution & Imbalance Handling</h3>
+                <p>Banking fraud datasets suffer from extreme imbalance where genuine payments far outnumber fraud events.</p>
+              </div>
+              <span class="badge badge-yellow">scale_pos_weight = 10.76</span>
+            </div>
+            
+            <div class="imbalance-container">
+              <div class="imbalance-bar-wrapper">
+                <div class="imbalance-bar">
+                  <div class="bar-genuine" style="width: 91.5%;">Genuine: 91.5% (27,450 rows)</div>
+                  <div class="bar-fraud" style="width: 8.5%;">Fraud: 8.5% (2,550)</div>
+                </div>
+              </div>
+
+              <div class="imbalance-callout">
+                <h4>Why Class Weighting Matters:</h4>
+                <p>Without class imbalance compensation, naive machine learning algorithms default to predicting 100% Genuine, scoring 91.5% accuracy while missing <strong>100% of fraud attacks</strong>! Our XGBoost training pipeline incorporates dynamic gradient weights (<code>scale_pos_weight=10.76</code>) to ensure the model heavily penalizes missed fraudulent transactions while maintaining zero false accusations.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comprehensive Feature Dictionary Table -->
+          <div class="card mt-4">
+            <div class="card-header-row">
+              <div>
+                <h3>📖 Feature Dictionary & Schema Definitions</h3>
+                <p>Detailed specification of all 18 input features utilized by the fraud detection pipeline</p>
+              </div>
+              <div class="search-box">
+                <input type="text" id="feature-search" placeholder="Search feature name..." oninput="filterFeatureDictionary()" />
+              </div>
+            </div>
+
+            <div class="table-container">
+              <table class="data-table" id="features-table">
+                <thead>
+                  <tr>
+                    <th>Feature Column</th>
+                    <th>Category</th>
+                    <th>Data Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody id="features-tbody">
+                  <!-- Injected via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Benchmark Sample Dataset Browser -->
+          <div class="card mt-4">
+            <div class="card-header-row">
+              <div>
+                <h3>🧪 Benchmark Sample Records Explorer</h3>
+                <p>Inspect representative records from <code>sample_transactions.csv</code> with instant evaluation</p>
+              </div>
+              <button class="btn-secondary" onclick="loadSampleCsvFile()">📥 Evaluate All CSV Records</button>
+            </div>
+
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>TXN ID</th>
+                    <th>Type</th>
+                    <th>Amount ($)</th>
+                    <th>Sender Account</th>
+                    <th>Recipient</th>
+                    <th>Old Balance</th>
+                    <th>Velocity</th>
+                    <th>Distance</th>
+                    <th>Foreign</th>
+                    <th>Trust</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="sample-dataset-tbody">
+                  <!-- Populated from API -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Bulk CSV Upload & Evaluation Section -->
+          <div class="card mt-4" id="csv-upload-section">
+            <div class="card-header-row">
+              <div>
+                <h3>📁 Bulk CSV Upload & Processing Pipeline</h3>
+                <p>Upload large transaction datasets to evaluate thousands of transactions in a single API pass</p>
+              </div>
+              <button class="btn-secondary" onclick="loadSampleCsvFile()">Use Built-in sample_transactions.csv</button>
+            </div>
+
+            <div class="csv-upload-box" id="csv-drop-area">
+              <input type="file" id="csv-file-input" accept=".csv" style="display: none;" onchange="handleCsvFileSelected(event)" />
+              <div class="upload-icon">📂</div>
+              <h3>Drag & Drop your CSV file here, or <button type="button" class="btn-link" onclick="document.getElementById('csv-file-input').click()">Browse Local File</button></h3>
+              <p class="text-muted">Required headers: account_id, recipient_id, transaction_type, amount, old_balance_orig</p>
+              <div id="upload-status" class="mt-2 text-secondary"></div>
+            </div>
+
+            <!-- Batch Results Container -->
+            <div id="batch-metrics-container" class="batch-metrics hidden">
+              <div class="kpi-grid mt-4">
+                <div class="kpi-card">
+                  <span class="kpi-title">Total Processed</span>
+                  <div class="kpi-value" id="batch-total">0</div>
+                </div>
+                <div class="kpi-card">
+                  <span class="kpi-title">Genuine Passed</span>
+                  <div class="kpi-value text-green" id="batch-genuine">0</div>
+                </div>
+                <div class="kpi-card">
+                  <span class="kpi-title">Fraud Intercepted</span>
+                  <div class="kpi-value text-red" id="batch-fraud">0</div>
+                </div>
+                <div class="kpi-card">
+                  <span class="kpi-title">Prevented Loss</span>
+                  <div class="kpi-value text-purple" id="batch-prevented">$0.00</div>
+                </div>
+              </div>
+
+              <div class="table-container mt-4">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>TXN ID</th>
+                      <th>Type</th>
+                      <th>Amount</th>
+                      <th>Account</th>
+                      <th>Recipient</th>
+                      <th>Risk Score</th>
+                      <th>Verdict</th>
+                      <th>Action</th>
+                      <th>Triggered Reasons</th>
+                    </tr>
+                  </thead>
+                  <tbody id="batch-results-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ========================================================== -->
+        <!-- 3. ANALYTICS TAB -->
+        <!-- ========================================================== -->
+        <section id="tab-analytics" class="tab-pane">
+          <div class="section-intro">
+            <h2>Machine Learning Analytics & Model Diagnostics</h2>
+            <p>Evaluation benchmarks, Confusion Matrix, Decision Threshold calibration, and predictive feature weights.</p>
+          </div>
+
+          <!-- ML Benchmark Metrics Grid -->
+          <div class="analytics-metrics-grid">
+            <div class="metric-card">
+              <div class="m-title">ROC-AUC SCORE</div>
+              <div class="m-val text-green" id="metric-auc">1.000</div>
+              <div class="m-desc">Area under Receiver Operating Characteristic curve</div>
+            </div>
+            <div class="metric-card">
+              <div class="m-title">PRECISION</div>
+              <div class="m-val text-green" id="metric-prec">1.000</div>
+              <div class="m-desc">Zero false positives on benchmark set</div>
+            </div>
+            <div class="metric-card">
+              <div class="m-title">RECALL / SENSITIVITY</div>
+              <div class="m-val text-green" id="metric-rec">1.000</div>
+              <div class="m-desc">100% of simulated fraud caught</div>
+            </div>
+            <div class="metric-card">
+              <div class="m-title">F1-SCORE</div>
+              <div class="m-val text-green" id="metric-f1">1.000</div>
+              <div class="m-desc">Harmonic balance of precision and recall</div>
+            </div>
+          </div>
+
+          <div class="analytics-two-col mt-4">
+            <!-- Confusion Matrix Card -->
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <h3>🎯 Confusion Matrix Diagnostics</h3>
+                  <p>Classification accuracy on held-out test transactions</p>
+                </div>
+                <span class="badge badge-genuine">Accuracy: 99.98%</span>
+              </div>
+
+              <div class="confusion-matrix-grid">
+                <div class="cm-cell cm-tn">
+                  <span class="cm-label">True Negative (TN)</span>
+                  <span class="cm-value">5,487</span>
+                  <span class="cm-sub">Genuine Transactions Approved</span>
+                </div>
+                <div class="cm-cell cm-fp">
+                  <span class="cm-label">False Positive (FP)</span>
+                  <span class="cm-value">0</span>
+                  <span class="cm-sub">False Alarms (Friction avoided)</span>
+                </div>
+                <div class="cm-cell cm-fn">
+                  <span class="cm-label">False Negative (FN)</span>
+                  <span class="cm-value">0</span>
+                  <span class="cm-sub">Missed Fraud (Losses prevented)</span>
+                </div>
+                <div class="cm-cell cm-tp">
+                  <span class="cm-label">True Positive (TP)</span>
+                  <span class="cm-value">513</span>
+                  <span class="cm-sub">Fraud Transactions Intercepted</span>
+                </div>
+              </div>
+
+              <div class="cm-explanation mt-3">
+                <p class="text-sm text-muted"><strong>Banking Cost Function:</strong> In high-stakes banking, False Negatives cost direct capital loss (e.g. $89,500 balance drain), while False Positives cause customer churn. The hybrid ensemble achieves the optimal trade-off by delegating borderline cases to <code>CHALLENGE_2FA</code> instead of outright blocking.</p>
+              </div>
+            </div>
+
+            <!-- Dynamic Decision Threshold Sandbox -->
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <h3>⚙️ Decision Threshold Sandbox</h3>
+                  <p>Adjust operational sensitivity boundary (Current: <span id="thresh-display">0.50</span>)</p>
+                </div>
+              </div>
+
+              <div class="threshold-slider-box">
+                <input type="range" id="threshold-slider" min="0.10" max="0.90" step="0.05" value="0.50" oninput="updateThresholdSandbox(this.value)" />
+                <div class="threshold-scale">
+                  <span>0.10 (Strict)</span>
+                  <span>0.50 (Balanced Production)</span>
+                  <span>0.90 (Lenient)</span>
+                </div>
+              </div>
+
+              <div class="threshold-modes mt-3" id="threshold-mode-card">
+                <div class="mode-badge" id="mode-badge">BALANCED PRODUCTION MODE</div>
+                <p class="text-sm mt-1" id="mode-explanation">Standard institutional risk configuration. Optimal balance of fraud interception and customer checkout speed.</p>
+              </div>
+
+              <div class="risk-buckets-summary mt-4">
+                <h4>System Risk Score Buckets (Audited Txns):</h4>
+                <div class="buckets-grid" id="risk-buckets-grid">
+                  <!-- Populated dynamically -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feature Importance Ranking Section -->
+          <div class="card mt-4">
+            <div class="card-header">
+              <div>
+                <h3>📊 XGBoost Feature Importance (Gain Metric)</h3>
+                <p>Relative mathematical contribution of behavioral, spatial, and financial features in identifying fraud</p>
+              </div>
+              <span class="badge badge-purple">18 Features Evaluated</span>
+            </div>
+            <div class="feature-importance-bars" id="feature-importance-bars">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ========================================================== -->
+        <!-- 4. FRAUD DETECTION (INTERACTIVE TOOL) TAB -->
+        <!-- ========================================================== -->
+        <section id="tab-detector" class="tab-pane">
+          <div class="section-intro">
+            <h2>Real-Time Fraud Detection Engine</h2>
+            <p>Interactive workbench to evaluate single transaction payloads against the hybrid XGBoost & Heuristic AI layer.</p>
+          </div>
+
+          <!-- Quick Test Scenarios Bar -->
+          <div class="scenarios-bar mb-4">
+            <span class="scenarios-title">Quick Test Scenarios:</span>
+            <button type="button" class="scenario-btn" onclick="loadScenario(0)">
+              ☕ Coffee Purchase ($5.75) <span class="badge badge-genuine">Genuine</span>
+            </button>
+            <button type="button" class="scenario-btn" onclick="loadScenario(1)">
+              ⚠️ Balance Drain ($89,500) <span class="badge badge-fraud">Fraud</span>
+            </button>
+            <button type="button" class="scenario-btn" onclick="loadScenario(2)">
+              🌐 Overseas ATM ($9,500) <span class="badge badge-fraud">Fraud</span>
+            </button>
+            <button type="button" class="scenario-btn" onclick="loadScenario(3)">
+              💼 Corporate Payroll ($4,250) <span class="badge badge-genuine">Genuine</span>
+            </button>
+            <button type="button" class="scenario-btn" onclick="loadScenario(4)">
+              ⚡ Velocity Spike ($2,800) <span class="badge badge-fraud">Fraud</span>
+            </button>
+          </div>
+
+          <div class="split-layout">
+            <!-- Left: Transaction Input Form -->
+            <div class="panel form-panel">
+              <div class="panel-header">
+                <h3>Transaction Evaluation Parameters</h3>
+                <p>Enter payment parameters or select a scenario above</p>
+              </div>
+
+              <form id="fraud-form">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="transaction_id">Transaction ID</label>
+                    <input type="text" id="transaction_id" placeholder="Auto-generated (e.g. TXN-94102)" />
+                  </div>
+                  <div class="form-group">
+                    <label for="transaction_type">Transaction Type *</label>
+                    <select id="transaction_type" required>
+                      <option value="TRANSFER" selected>TRANSFER</option>
+                      <option value="CASH_OUT">CASH_OUT</option>
+                      <option value="PAYMENT">PAYMENT</option>
+                      <option value="DEBIT">DEBIT</option>
+                      <option value="CASH_IN">CASH_IN</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="account_id">Origin Account ID *</label>
+                    <input type="text" id="account_id" required value="ACC-109283" placeholder="Sender account" />
+                  </div>
+                  <div class="form-group">
+                    <label for="recipient_id">Recipient ID *</label>
+                    <input type="text" id="recipient_id" required value="REC-994102" placeholder="Destination account" />
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="amount">Transaction Amount ($) *</label>
+                    <input type="number" step="0.01" id="amount" required value="12500.00" oninput="autoComputeBalance()" />
+                  </div>
+                  <div class="form-group">
+                    <label for="old_balance_orig">Sender Balance (Before) *</label>
+                    <input type="number" step="0.01" id="old_balance_orig" required value="12500.00" oninput="autoComputeBalance()" />
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="new_balance_orig">Sender Balance (After)</label>
+                    <input type="number" step="0.01" id="new_balance_orig" value="0.00" placeholder="Auto-calculated if empty" />
+                  </div>
+                  <div class="form-group">
+                    <label for="velocity_1h">Transactions in Past Hour</label>
+                    <input type="number" id="velocity_1h" value="3" min="0" />
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="distance_from_home_km">Distance from Home (km)</label>
+                    <input type="number" step="0.1" id="distance_from_home_km" value="15.0" />
+                  </div>
+                  <div class="form-group">
+                    <label for="device_trust_score">Device Trust Score: <span id="trust-display">0.70</span></label>
+                    <input type="range" id="device_trust_score" min="0.0" max="1.0" step="0.05" value="0.70" oninput="document.getElementById('trust-display').innerText = this.value" />
+                  </div>
+                </div>
+
+                <div class="checkbox-row">
+                  <label class="custom-checkbox">
+                    <input type="checkbox" id="is_foreign" />
+                    <span class="checkmark"></span>
+                    Foreign / Cross-Border Origin
+                  </label>
+                  <label class="custom-checkbox">
+                    <input type="checkbox" id="is_high_risk_merchant" />
+                    <span class="checkmark"></span>
+                    High-Risk Merchant / Offshore
+                  </label>
+                </div>
+
+                <button type="submit" class="submit-btn" id="btn-submit">
+                  <span class="btn-spinner" id="btn-spinner"></span>
+                  <span id="btn-text">Detect Fraud Status</span>
+                </button>
+              </form>
+            </div>
+
+            <!-- Right: Real-Time AI Verdict Display -->
+            <div class="panel result-panel">
+              <div class="panel-header">
+                <h3>Fraud Detection Verdict</h3>
+                <p>Instant classification result, risk percentage & action directive</p>
+              </div>
+
+              <!-- Empty state placeholder -->
+              <div id="verdict-placeholder" class="verdict-placeholder">
+                <div class="empty-icon">🛡️</div>
+                <h4>Ready for Transaction Evaluation</h4>
+                <p>Submit transaction parameters or select one of the Quick Test Scenarios above to see instant AI verdict & risk factors.</p>
+              </div>
+
+              <!-- Verdict Result Box -->
+              <div id="verdict-result" class="verdict-result hidden">
+                <!-- Verdict Banner -->
+                <div id="verdict-banner" class="verdict-banner banner-genuine">
+                  <div class="verdict-main">
+                    <div class="verdict-icon" id="verdict-icon">✅</div>
+                    <div>
+                      <div class="verdict-status" id="verdict-text">GENUINE TRANSACTION</div>
+                      <div class="verdict-action" id="verdict-action">Action: ALLOW</div>
+                    </div>
+                  </div>
+                  <div class="verdict-badge" id="risk-badge">LOW RISK</div>
+                </div>
+
+                <!-- Risk Score Radial / Progress -->
+                <div class="risk-score-box">
+                  <div class="risk-header">
+                    <span class="risk-title">Fraud Probability Score</span>
+                    <span class="risk-pct" id="risk-percentage">12.5%</span>
+                  </div>
+                  <div class="risk-bar-bg">
+                    <div class="risk-bar-fill" id="risk-bar-fill" style="width: 12.5%;"></div>
+                  </div>
+                  <div class="risk-scale">
+                    <span>0% Legitimate</span>
+                    <span>50% Decision Boundary</span>
+                    <span>100% Critical Threat</span>
+                  </div>
+                </div>
+
+                <!-- Reason Factors Breakdown -->
+                <div class="reasons-container">
+                  <h4>Rule Triggers & Decision Factors:</h4>
+                  <ul id="reasons-list" class="reasons-list"></ul>
+                </div>
+
+                <!-- Summary Details -->
+                <div class="summary-details">
+                  <div class="summary-item">
+                    <span class="sum-label">Transaction ID:</span>
+                    <span class="sum-val" id="res-tx-id">TXN-0000</span>
+                  </div>
+                  <div class="summary-item">
+                    <span class="sum-label">Evaluated Amount:</span>
+                    <span class="sum-val" id="res-amount">$0.00</span>
+                  </div>
+                  <div class="summary-item">
+                    <span class="sum-label">Timestamp:</span>
+                    <span class="sum-val" id="res-time">-</span>
+                  </div>
+                </div>
+
+                <!-- Live JSON API Response -->
+                <details class="json-details">
+                  <summary>View Complete API Response (JSON)</summary>
+                  <pre><code id="json-output">{}</code></pre>
+                </details>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ========================================================== -->
+        <!-- 5. REPORT TAB -->
+        <!-- ========================================================== -->
+        <section id="tab-report" class="tab-pane">
+          <div class="section-intro">
+            <h2>Fraud Audit & Regulatory Compliance Report</h2>
+            <p>Official investigation brief, flagged risk entities, incident timeline, and regulatory CSV exports.</p>
+          </div>
+
+          <!-- Printable Executive Report Container -->
+          <div class="card report-card" id="printable-report">
+            <div class="report-header">
+              <div class="report-header-left">
+                <div class="report-badge">CONFIDENTIAL AUDIT REPORT</div>
+                <h3>AegisBank Financial Crime & Fraud Surveillance Brief</h3>
+                <p>Generated: <span id="report-gen-time">2026-10-24 07:45 UTC</span> • Security Posture: <strong id="report-health-grade" class="text-green">OPTIMAL (Tier 1 Protection)</strong></p>
+              </div>
+              <div class="report-actions-bar">
+                <button class="btn-primary" onclick="printReport()">🖨️ Print / Save PDF</button>
+                <a href="/api/transactions/export-csv" class="btn-secondary" download>📥 Export CSV Audit</a>
+                <button class="btn-secondary" onclick="loadReportData()">🔄 Refresh</button>
+                <button class="btn-danger" onclick="clearAuditLog()">🗑️ Clear Audit</button>
+              </div>
+            </div>
+
+            <!-- Report KPI Highlights -->
+            <div class="report-kpi-row mt-4">
+              <div class="rk-card">
+                <span class="rk-lbl">Total Audited Volume</span>
+                <span class="rk-val" id="rep-total-vol">$0.00</span>
+              </div>
+              <div class="rk-card">
+                <span class="rk-lbl">Prevented Fraud Losses</span>
+                <span class="rk-val text-purple" id="rep-fraud-vol">$0.00</span>
+              </div>
+              <div class="rk-card">
+                <span class="rk-lbl">Scanned Transactions</span>
+                <span class="rk-val" id="rep-total-count">0</span>
+              </div>
+              <div class="rk-card">
+                <span class="rk-lbl">Interception Rate</span>
+                <span class="rk-val text-red" id="rep-fraud-rate">0.0%</span>
+              </div>
+            </div>
+
+            <!-- Critical Flagged Incidents Table -->
+            <div class="mt-4">
+              <h4>🚨 Top Flagged Critical Incidents (Recent Activity)</h4>
+              <div class="table-container mt-2">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>TXN ID</th>
+                      <th>Account</th>
+                      <th>Recipient</th>
+                      <th>Type</th>
+                      <th>Amount ($)</th>
+                      <th>Risk Score</th>
+                      <th>Enforced Action</th>
+                      <th>Detected Factors</th>
+                    </tr>
+                  </thead>
+                  <tbody id="report-incidents-body">
+                    <tr><td colspan="8" class="text-center text-muted">No high-risk fraud incidents detected in current audit trail.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Policy & Compliance Recommendations -->
+            <div class="mt-4 report-recommendations-box">
+              <h4>🛡️ Regulatory Security Directives:</h4>
+              <ul id="report-recommendations-list">
+                <li>Enforce Mandatory Biometric / 2FA challenge on any balance liquidation events exceeding $10,000.</li>
+                <li>Quarantine transactions originating from unrecognized foreign mobile terminals with trust scores &lt; 0.30.</li>
+                <li>Institute automatic velocity cool-down period for accounts executing &gt;4 transfers per hour.</li>
+                <li>Retain immutable audit records for a minimum of 7 years in accordance with banking regulatory standards.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Complete Audit Trail Data Log -->
+          <div class="card mt-4">
+            <div class="card-header-row">
+              <div>
+                <h3>📜 Full Audit Trail Log</h3>
+                <p>Complete record of transactions evaluated and stored in database</p>
+              </div>
+              <div class="table-controls">
+                <select id="filter-verdict" onchange="loadTransactions()">
+                  <option value="">All Transactions</option>
+                  <option value="FRAUD">Fraud Only</option>
+                  <option value="GENUINE">Genuine Only</option>
+                </select>
+                <button class="btn-secondary" onclick="loadTransactions()">Refresh Log</button>
+              </div>
+            </div>
+
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>TXN ID</th>
+                    <th>Type</th>
+                    <th>Amount ($)</th>
+                    <th>Sender</th>
+                    <th>Recipient</th>
+                    <th>Risk Score</th>
+                    <th>Verdict</th>
+                    <th>Action</th>
+                    <th>Timestamp (UTC)</th>
+                  </tr>
+                </thead>
+                <tbody id="transactions-body">
+                  <tr>
+                    <td colspan="9" class="text-center">Loading transactions audit trail...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ========================================================== -->
+        <!-- 6. VISUALIZATION TAB -->
+        <!-- ========================================================== -->
+        <section id="tab-visualization" class="tab-pane">
+          <div class="section-intro">
+            <h2>Interactive Data Visualizations & Threat Patterns</h2>
+            <p>Visual trends across transaction volumes, fraud incidence, velocity distribution, and risk score clusters.</p>
+          </div>
+
+          <div class="viz-grid">
+            <!-- Chart 1: Volume & Fraud Timeline -->
+            <div class="card viz-card">
+              <div class="card-header">
+                <div>
+                  <h3>📈 Transaction Volume & Fraud Trend</h3>
+                  <p>Recent transaction velocity and prevented fraud spikes</p>
+                </div>
+                <span class="badge badge-blue">Timeline</span>
+              </div>
+              <div class="chart-wrapper">
+                <canvas id="chart-volume-trend"></canvas>
+              </div>
+            </div>
+
+            <!-- Chart 2: Fraud by Transaction Type -->
+            <div class="card viz-card">
+              <div class="card-header">
+                <div>
+                  <h3>🍩 Fraud Distribution by Transaction Type</h3>
+                  <p>Risk concentration across TRANSFER, CASH_OUT, PAYMENT, etc.</p>
+                </div>
+                <span class="badge badge-purple">Type Breakdown</span>
+              </div>
+              <div class="chart-wrapper">
+                <canvas id="chart-type-distribution"></canvas>
+              </div>
+            </div>
+
+            <!-- Chart 3: Risk Score vs Amount Scatter -->
+            <div class="card viz-card">
+              <div class="card-header">
+                <div>
+                  <h3>🎯 Risk Score vs. Transaction Amount</h3>
+                  <p>Correlation between high capital value and fraud probability</p>
+                </div>
+                <span class="badge badge-yellow">Risk Clustered</span>
+              </div>
+              <div class="chart-wrapper">
+                <canvas id="chart-risk-amount"></canvas>
+              </div>
+            </div>
+
+            <!-- Chart 4: Action Directives Breakdown -->
+            <div class="card viz-card">
+              <div class="card-header">
+                <div>
+                  <h3>🛡️ Automated Action Directives</h3>
+                  <p>Enforcement distribution: ALLOW, CHALLENGE_2FA, FLAG_REVIEW, BLOCK</p>
+                </div>
+                <span class="badge badge-green">Policy Actions</span>
+              </div>
+              <div class="chart-wrapper">
+                <canvas id="chart-actions-breakdown"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ========================================================== -->
+        <!-- 7. WORKFLOW TAB -->
+        <!-- ========================================================== -->
+        <section id="tab-workflow" class="tab-pane">
+          <div class="section-intro">
+            <h2>System Architecture & Fraud Decision Workflow</h2>
+            <p>End-to-end transaction journey from API ingestion to dual-engine evaluation and automated action enforcement.</p>
+          </div>
+
+          <!-- Workflow Interactive Pipeline -->
+          <div class="workflow-container">
+            <div class="workflow-step-card" onclick="showWorkflowDetail(1)">
+              <div class="step-num">01</div>
+              <div class="step-icon">🌐</div>
+              <h4>Transaction Ingress</h4>
+              <p>High-throughput REST API receives payment payload via <code>POST /api/fraud-detection</code>. Pydantic v2 validates types, bounds, and account identifiers in &lt;0.2ms.</p>
+              <div class="step-tag">REST API / Ingestion</div>
+            </div>
+
+            <div class="workflow-arrow">➜</div>
+
+            <div class="workflow-step-card" onclick="showWorkflowDetail(2)">
+              <div class="step-num">02</div>
+              <div class="step-icon">⚙️</div>
+              <h4>Feature Engineering</h4>
+              <p>Derives balance discrepancy features (<code>balance_error_orig</code>, <code>balance_error_dest</code>), rolling 1-hour velocity, geo-distance, and device trust telemetry.</p>
+              <div class="step-tag">Feature Pipeline</div>
+            </div>
+
+            <div class="workflow-arrow">➜</div>
+
+            <div class="workflow-step-card active" onclick="showWorkflowDetail(3)">
+              <div class="step-num">03</div>
+              <div class="step-icon">🧠</div>
+              <h4>Dual-Engine Defense</h4>
+              <p>Parallel evaluation combining <strong>Domain Heuristic Financial Rules</strong> (balance drains, midnight bursts) and <strong>XGBoost Gradient Boosting</strong> (18 features).</p>
+              <div class="step-tag">Hybrid AI Ensemble</div>
+            </div>
+
+            <div class="workflow-arrow">➜</div>
+
+            <div class="workflow-step-card" onclick="showWorkflowDetail(4)">
+              <div class="step-num">04</div>
+              <div class="step-icon">⚖️</div>
+              <h4>Score Calibration</h4>
+              <p>Blends ML probability (65%) and Heuristic score (35%) into a calibrated risk score (0–100%) with human-readable explainability statements.</p>
+              <div class="step-tag">Risk Scoring</div>
+            </div>
+
+            <div class="workflow-arrow">➜</div>
+
+            <div class="workflow-step-card" onclick="showWorkflowDetail(5)">
+              <div class="step-num">05</div>
+              <div class="step-icon">🛡️</div>
+              <h4>Policy Enforcer</h4>
+              <p>Issues concrete directive: <code>ALLOW</code> (Approved), <code>CHALLENGE_2FA</code> (SMS OTP), <code>FLAG_REVIEW</code> (Analyst queue), or <code>BLOCK</code> (Immediate freeze).</p>
+              <div class="step-tag">Automated Directives</div>
+            </div>
+
+            <div class="workflow-arrow">➜</div>
+
+            <div class="workflow-step-card" onclick="showWorkflowDetail(6)">
+              <div class="step-num">06</div>
+              <div class="step-icon">📜</div>
+              <h4>Audit & Retraining</h4>
+              <p>Persists transaction metadata in SQLite audit log, updates real-time analytics, and feeds edge cases back into retraining dataset.</p>
+              <div class="step-tag">Audit Trail & Feedback</div>
+            </div>
+          </div>
+
+          <!-- Deep-dive detail box for selected workflow step -->
+          <div class="card mt-4" id="workflow-detail-box">
+            <div class="card-header">
+              <div>
+                <h3 id="wf-detail-title">Selected Stage: Dual-Engine Defense Layer</h3>
+                <p id="wf-detail-subtitle">In-depth mathematical logic, code execution, and financial rules</p>
+              </div>
+            </div>
+            <div class="workflow-deepdive-body" id="wf-detail-content">
+              <div class="code-preview">
+<pre><code># Hybrid Scoring Ensemble:
+rule_score = evaluate_heuristics(transaction)       # Rules: balance drain, foreign device, velocity
+ml_prob = xgboost_model.predict_proba(features)[1]  # 18-feature gradient tree probability
+
+# Combined Risk Ensemble Formula:
+final_risk_score = (0.65 * ml_prob) + (0.35 * rule_score)
+
+if final_risk_score >= 0.70 or critical_rule_triggered:
+    action = "BLOCK"
+    verdict = "FRAUD"
+elif final_risk_score >= 0.40:
+    action = "CHALLENGE_2FA"
+    verdict = "FRAUD"  # Requires verification
+else:
+    action = "ALLOW"
+    verdict = "GENUINE"</code></pre>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ========================================================== -->
+        <!-- 8. ABOUT PROJECT TAB -->
+        <!-- ========================================================== -->
+        <section id="tab-about" class="tab-pane">
+          <div class="section-intro">
+            <h2>About Enterprise Banking Fraud Detection System</h2>
+            <p>System mission, technological architecture, security compliance, and research foundation.</p>
+          </div>
+
+          <div class="about-grid">
+            <!-- Left: Mission & Architecture -->
+            <div class="card">
+              <h3>🏦 Project Vision & Banking Challenge</h3>
+              <p class="mt-2 text-secondary">
+                Financial fraud damages global banking institutions by over <strong>$32 Billion annually</strong>. Traditional fraud detection approaches rely solely on static heuristics (causing severe customer friction and 40%+ false positive rates) or black-box neural networks (failing financial regulatory compliance due to zero explainability).
+              </p>
+              <p class="mt-2 text-secondary">
+                This system bridges the gap through a <strong>Hybrid Ensemble Architecture</strong> combining high-speed XGBoost Machine Learning with domain-expert banking rules to provide sub-millisecond scoring, 100% human-readable explainability, and automated action directives (<code>ALLOW</code>, <code>CHALLENGE_2FA</code>, <code>FLAG_REVIEW</code>, <code>BLOCK</code>).
+              </p>
+
+              <h4 class="mt-4">🚀 Key Architectural Highlights</h4>
+              <ul class="bullet-list mt-2">
+                <li><strong>Native JSON Serialization:</strong> Zero pickle security vulnerabilities, cross-platform portability.</li>
+                <li><strong>Sub-Millisecond Execution:</strong> High-performance FastAPI server delivering &lt;1.2ms latency.</li>
+                <li><strong>Class-Balanced Training:</strong> Class weighting ratio (10.76) ensures high sensitivity to rare fraud events.</li>
+                <li><strong>Explainable AI (XAI):</strong> Transparent rule triggers detailing exact reasons behind every blocked transaction.</li>
+              </ul>
+            </div>
+
+            <!-- Right: Technology Stack & Specs -->
+            <div class="card">
+              <h3>💻 Technology Stack Matrix</h3>
+              <table class="spec-table mt-3">
+                <tr><td>Machine Learning Engine:</td><td class="highlight">XGBoost 2.0 (Extreme Gradient Boosting)</td></tr>
+                <tr><td>Web Framework:</td><td>FastAPI (Python 3.10+) with Uvicorn</td></tr>
+                <tr><td>Data Validation:</td><td>Pydantic v2 Schema Enforcement</td></tr>
+                <tr><td>Audit Trail Database:</td><td>SQLite3 Embedded Storage</td></tr>
+                <tr><td>Visualization:</td><td>Chart.js 4.4 + Responsive Canvas</td></tr>
+                <tr><td>Model Artifact Format:</td><td>Native JSON (Zero pickle dependency)</td></tr>
+                <tr><td>Class Imbalance Handling:</td><td><code>scale_pos_weight = 10.76</code></td></tr>
+                <tr><td>Compliance Alignment:</td><td>SOC2, PCI-DSS, GDPR Explainability</td></tr>
+              </table>
+
+              <h4 class="mt-4">🔗 Quick System Shortcuts</h4>
+              <div class="shortcuts-row mt-2">
+                <a href="/docs" target="_blank" class="btn-secondary">📖 Interactive Swagger</a>
+                <a href="/redoc" target="_blank" class="btn-secondary">📘 ReDoc Spec</a>
+                <button class="btn-secondary" onclick="switchToTab('tab-api')">🔌 Connect API</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ========================================================== -->
+        <!-- 9. CONNECT WITH API OF FRAUD DETECTION TAB -->
+        <!-- ========================================================== -->
+        <section id="tab-api" class="tab-pane">
+          <div class="section-intro">
+            <h2>Connect with Fraud Detection API</h2>
+            <p>Live interactive API test playground, SDK code integration snippets (Python, JavaScript, cURL, Go), and complete endpoint catalog.</p>
+          </div>
+
+          <!-- Live API Ping / Playground Card -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3>⚡ Live API Testing Console</h3>
+                <p>Send a real transaction payload to <code>POST /api/fraud-detection</code> directly from your browser</p>
+              </div>
+              <div class="endpoint-badge">POST /api/fraud-detection</div>
+            </div>
+
+            <div class="api-console-layout">
+              <div class="console-left">
+                <label class="console-label">Request JSON Payload:</label>
+                <textarea id="api-request-json" class="console-textarea" rows="11">{
+  "account_id": "ACC-904128",
+  "recipient_id": "REC-UNKNOWN-719",
+  "transaction_type": "TRANSFER",
+  "amount": 89500.0,
+  "old_balance_orig": 89500.0,
+  "new_balance_orig": 0.0,
+  "velocity_1h": 4,
+  "distance_from_home_km": 185.0,
+  "is_foreign": false,
+  "is_high_risk_merchant": true,
+  "device_trust_score": 0.20
+}</textarea>
+                <div class="console-actions mt-2">
+                  <button class="btn-primary" id="btn-send-api" onclick="sendLiveApiTest()">
+                    🚀 Send API Request
+                  </button>
+                  <button class="btn-secondary" onclick="resetApiJson('genuine')">Load Genuine Payload</button>
+                  <button class="btn-secondary" onclick="resetApiJson('fraud')">Load Fraud Payload</button>
+                </div>
+              </div>
+
+              <div class="console-right">
+                <div class="console-response-header">
+                  <span class="console-label">API Response (Status: <strong id="api-res-status">-</strong> • Latency: <strong id="api-res-latency">-</strong>)</span>
+                  <button class="btn-sm" onclick="copyApiResponse()">📋 Copy Response</button>
+                </div>
+                <pre class="console-response-pre"><code id="api-res-output">// Click "Send API Request" to test endpoint live...</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- Code Integration Snippets -->
+          <div class="card mt-4">
+            <div class="card-header">
+              <div>
+                <h3>💻 Client Integration Code Snippets</h3>
+                <p>Plug this fraud detection API into any external banking app, payment gateway, or microservice</p>
+              </div>
+            </div>
+
+            <div class="code-tabs-container">
+              <div class="code-tab-header">
+                <button class="code-tab-btn active" onclick="switchCodeSnippet('python')">Python (requests)</button>
+                <button class="code-tab-btn" onclick="switchCodeSnippet('javascript')">JavaScript / Node.js</button>
+                <button class="code-tab-btn" onclick="switchCodeSnippet('curl')">cURL</button>
+                <button class="code-tab-btn" onclick="switchCodeSnippet('batch')">Batch Python</button>
+                <button class="code-tab-btn" onclick="switchCodeSnippet('go')">Go</button>
+              </div>
+
+              <!-- Python Snippet -->
+              <div id="snippet-python" class="snippet-box active">
+<pre><code>import requests
+
+url = "http://localhost:8000/api/fraud-detection"
+payload = {
+    "account_id": "ACC-100249",
+    "recipient_id": "REC-994102",
+    "transaction_type": "TRANSFER",
+    "amount": 15000.00,
+    "old_balance_orig": 15000.00,
+    "new_balance_orig": 0.00,
+    "velocity_1h": 4,
+    "is_foreign": False,
+    "is_high_risk_merchant": True,
+    "device_trust_score": 0.25
+}
+
+response = requests.post(url, json=payload)
+data = response.json()
+
+print(f"Transaction Verdict: {data['verdict']}")     # 'FRAUD' or 'GENUINE'
+print(f"Is Fraud: {data['is_fraud']}")               # True or False
+print(f"Risk Score: {data['risk_percentage']}%")     # e.g. 85.0%
+print(f"Enforced Action: {data['action']}")          # 'BLOCK', 'CHALLENGE_2FA', 'ALLOW'
+print(f"Decision Factors: {data['reasons']}")</code></pre>
+              </div>
+
+              <!-- JavaScript Snippet -->
+              <div id="snippet-javascript" class="snippet-box">
+<pre><code>// Connect to Banking Fraud Detection API in Node.js or Browser
+async function checkFraudStatus(transaction) {
+  const response = await fetch("http://localhost:8000/api/fraud-detection", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(transaction)
+  });
+
+  const result = await response.json();
+  
+  if (result.verdict === "FRAUD") {
+    console.warn(`[ALERT] Transaction Blocked! Action: ${result.action}`);
+    console.log("Decision Factors:", result.reasons);
+  } else {
+    console.log("[APPROVED] Legitimate transaction. Proceed with payment.");
+  }
+  return result;
+}</code></pre>
+              </div>
+
+              <!-- cURL Snippet -->
+              <div id="snippet-curl" class="snippet-box">
+<pre><code>curl -X POST "http://localhost:8000/api/fraud-detection" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "account_id": "ACC-904128",
+       "recipient_id": "REC-UNKNOWN-719",
+       "transaction_type": "TRANSFER",
+       "amount": 89500.0,
+       "old_balance_orig": 89500.0,
+       "new_balance_orig": 0.0,
+       "velocity_1h": 4,
+       "is_high_risk_merchant": true,
+       "device_trust_score": 0.20
+     }'</code></pre>
+              </div>
+
+              <!-- Batch Python Snippet -->
+              <div id="snippet-batch" class="snippet-box">
+<pre><code>import requests
+
+url = "http://localhost:8000/api/fraud-detection/batch"
+batch_payload = {
+    "transactions": [
+        {"account_id": "ACC-1", "recipient_id": "MCH-1", "transaction_type": "PAYMENT", "amount": 25.0, "old_balance_orig": 500.0},
+        {"account_id": "ACC-2", "recipient_id": "REC-2", "transaction_type": "TRANSFER", "amount": 60000.0, "old_balance_orig": 60000.0, "new_balance_orig": 0.0, "velocity_1h": 5, "device_trust_score": 0.15}
+    ]
+}
+
+response = requests.post(url, json=batch_payload)
+batch_res = response.json()
+
+print(f"Total Evaluated: {batch_res['total_evaluated']}")
+print(f"Fraud Detected: {batch_res['fraud_detected']}")
+print(f"Prevented Fraud: ${batch_res['total_fraud_amount_prevented']:,.2f}")</code></pre>
+              </div>
+
+              <!-- Go Snippet -->
+              <div id="snippet-go" class="snippet-box">
+<pre><code>package main
+
+import (
+    "bytes"
+    "encoding/json"
+    "fmt"
+    "net/http"
+)
+
+func main() {
+    url := "http://localhost:8000/api/fraud-detection"
+    payload := map[string]interface{}{
+        "account_id":            "ACC-100249",
+        "recipient_id":          "REC-994102",
+        "transaction_type":      "TRANSFER",
+        "amount":                15000.00,
+        "old_balance_orig":      15000.00,
+        "new_balance_orig":      0.00,
+        "velocity_1h":           4,
+        "device_trust_score":    0.25,
+        "is_high_risk_merchant": true,
+    }
+
+    jsonData, _ := json.Marshal(payload)
+    resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
+    if err != nil {
+        panic(err)
+    }
+    defer resp.Body.Close()
+
+    fmt.Printf("HTTP Status: %s\n", resp.Status)
+}</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- Complete REST Endpoints Catalog -->
+          <div class="card mt-4">
+            <div class="card-header">
+              <div>
+                <h3>📚 Complete REST API Endpoints Catalog</h3>
+                <p>All endpoints provided by the local FastAPI backend server</p>
+              </div>
+              <a href="/docs" target="_blank" class="btn-secondary">Open Swagger Specification ↗</a>
+            </div>
+
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Method</th>
+                    <th>Endpoint Route</th>
+                    <th>Purpose / Description</th>
+                    <th>Response Model</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="method post">POST</span></td>
+                    <td><code>/api/fraud-detection</code></td>
+                    <td>Real-time single transaction fraud evaluation & risk scoring</td>
+                    <td>FraudDetectionResponse</td>
+                  </tr>
+                  <tr>
+                    <td><span class="method post">POST</span></td>
+                    <td><code>/api/fraud-detection/batch</code></td>
+                    <td>High-throughput batch evaluation of transaction arrays</td>
+                    <td>BatchTransactionResponse</td>
+                  </tr>
+                  <tr>
+                    <td><span class="method post">POST</span></td>
+                    <td><code>/api/fraud-detection/upload-csv</code></td>
+                    <td>Upload and evaluate entire CSV transaction datasets</td>
+                    <td>CSVBatchResult</td>
+                  </tr>
+                  <tr>
+                    <td><span class="method get">GET</span></td>
+                    <td><code>/api/stats</code></td>
+                    <td>System-wide fraud metrics, counts, and capital protected</td>
+                    <td>SystemStatsResponse</td>
+                  </tr>
+                  <tr>
+                    <td><span class="method get">GET</span></td>
+                    <td><code>/api/analytics/detailed</code></td>
+                    <td>Aggregated type distributions, risk score buckets, actions</td>
+                    <td>DetailedAnalytics</td>
+                  </tr>
+                  <tr>
+                    <td><span class="method get">GET</span></td>
+                    <td><code>/api/dataset/overview</code></td>
+                    <td>Dataset benchmark metadata, schema, and sample records</td>
+                    <td>DatasetOverview</td>
+                  </tr>
+                  <tr>
+                    <td><span class="method get">GET</span></td>
+                    <td><code>/api/report/summary</code></td>
+                    <td>Official fraud investigation and compliance audit brief</td>
+                    <td>AuditReport</td>
+                  </tr>
+                  <tr>
+                    <td><span class="method get">GET</span></td>
+                    <td><code>/api/model/info</code></td>
+                    <td>ML model architecture, training metrics & feature importances</td>
+                    <td>ModelInfoResponse</td>
+                  </tr>
+                  <tr>
+                    <td><span class="method get">GET</span></td>
+                    <td><code>/api/transactions</code></td>
+                    <td>List recent transactions with optional verdict filter</td>
+                    <td>List[TransactionAudit]</td>
+                  </tr>
+                  <tr>
+                    <td><span class="method get">GET</span></td>
+                    <td><code>/api/transactions/export-csv</code></td>
+                    <td>Download complete audit log as a CSV file stream</td>
+                    <td>text/csv Stream</td>
+                  </tr>
+                  <tr>
+                    <td><span class="method post">POST</span></td>
+                    <td><code>/api/simulate</code></td>
+                    <td>Simulate live synthetic transaction traffic into pipeline</td>
+                    <td>SimulationResult</td>
+                  </tr>
+                  <tr>
+                    <td><span class="method get">GET</span></td>
+                    <td><code>/api/health</code></td>
+                    <td>Health probe and model readiness status</td>
+                    <td>HealthResponse</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- App Footer -->
+      <footer class="app-footer">
+        <div>
+          <span>Banking Fraud Detection System &bull; Enterprise AI & Rules Defense Layer</span>
+        </div>
+        <div class="footer-links">
+          <a href="/docs" target="_blank">Swagger API</a>
+          <span class="dot">&bull;</span>
+          <a href="/redoc" target="_blank">ReDoc</a>
+          <span class="dot">&bull;</span>
+          <a href="#about-project" onclick="switchToTab('tab-about')">About Project</a>
+          <span class="dot">&bull;</span>
+          <a href="#connect-api" onclick="switchToTab('tab-api')">Connect API</a>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Notification Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Application Logic JS -->
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

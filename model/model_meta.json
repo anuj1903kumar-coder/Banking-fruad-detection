@@ -1,0 +1,52 @@
+{
+  "model_type": "XGBoost",
+  "version": "2.0.0",
+  "trained_at": "2026-10-23T17:08:25.972588Z",
+  "dataset_size": 30000,
+  "feature_columns": [
+    "amount",
+    "old_balance_orig",
+    "new_balance_orig",
+    "old_balance_dest",
+    "new_balance_dest",
+    "balance_error_orig",
+    "balance_error_dest",
+    "is_transfer",
+    "is_cash_out",
+    "is_payment",
+    "is_debit",
+    "is_cash_in",
+    "velocity_1h",
+    "distance_from_home_km",
+    "is_foreign",
+    "is_high_risk_merchant",
+    "device_trust_score",
+    "hour_of_day"
+  ],
+  "metrics": {
+    "roc_auc": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0
+  },
+  "feature_importance": {
+    "balance_error_dest": 0.9105,
+    "amount": 0.0624,
+    "device_trust_score": 0.0058,
+    "is_cash_in": 0.0057,
+    "balance_error_orig": 0.0039,
+    "old_balance_dest": 0.0037,
+    "velocity_1h": 0.0032,
+    "is_debit": 0.0032,
+    "new_balance_dest": 0.0006,
+    "hour_of_day": 0.0004,
+    "distance_from_home_km": 0.0003,
+    "is_transfer": 0.0002,
+    "new_balance_orig": 0.0001,
+    "old_balance_orig": 0.0001,
+    "is_cash_out": 0.0,
+    "is_payment": 0.0,
+    "is_foreign": 0.0,
+    "is_high_risk_merchant": 0.0
+  }
+}
